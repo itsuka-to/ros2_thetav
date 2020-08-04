@@ -1,6 +1,6 @@
 /*
   Copyright 2020 K. Takeo. All rights reserved.
-  Copyright 2020 Itsuka Tomoya(github id:@itsuka-to)
+  Copyright 2020 Tomoya Itsuka (@itsuka-to)
 
   Redistribution and use in source and binary forms, with or without
   modification, are permitted provided that the following conditions
@@ -33,7 +33,6 @@
 #include <iostream>
 #include <chrono>
 #include "rclcpp/rclcpp.hpp"
-#include "std_msgs/msg/string.hpp"
 #include "sensor_msgs/msg/image.hpp"
 
 #include <gst/gst.h>
@@ -65,7 +64,7 @@ struct gst_src src;
 std::shared_ptr<rclcpp::Publisher<sensor_msgs::msg::Image, std::allocator<void>>> image_pub;
 
 static GstFlowReturn
-modify_in_data (GstMapInfo map)
+publish_image (GstMapInfo map)
 {
     int dataLength;
     guint8 *rdata;
@@ -86,12 +85,6 @@ modify_in_data (GstMapInfo map)
     std::vector<unsigned char> values(rdata, (unsigned char *)rdata + dataLength);
     image.data = values;
     image_pub->publish(image);
-    // std::cout << "len: " << dataLength << std::endl;
-    // std::cout << "rdata[0]: " << (int)rdata[0] << std::endl;
-    /* Modify half of frame to plane white */
-    // for (int i=0; i <= dataLength/2; i++) {
-    //     rdata[i] = 0xff;
-    // }
 }
 
 static gboolean
@@ -130,19 +123,14 @@ GstFlowReturn cb_new_sample(GstAppSink *sink, gpointer data)
     GstBuffer *app_buffer, *buffer;
     GstSample *sample;
     GstMapInfo map;
-    //    RCLCPP_INFO(node->get_logger(), "frame: %d\n", counter++);
 
-    // std::cout << counter++ << std::endl;
     sample = gst_app_sink_pull_sample(sink);
     buffer = gst_sample_get_buffer(sample);
     app_buffer = gst_buffer_copy_deep(buffer);
     gst_buffer_map(app_buffer, &map, GST_MAP_WRITE);
-    //  gst_buffer_map(buffer, &map, GST_MAP_READ);
-
-    modify_in_data(map);
+    publish_image(map);
 
     gst_sample_unref (sample);
-    /* we don't need the appsink sample anymore */
     gst_buffer_unmap (app_buffer, &map);
     gst_buffer_unref(app_buffer);
     if (sample == NULL) {
@@ -287,20 +275,14 @@ int main(int argc, char * argv[])
     rclcpp::init(argc, argv);
     auto node = rclcpp::Node::make_shared("thetav_publisher");
     image_pub = node->create_publisher<sensor_msgs::msg::Image>("thetav", 10);
-    auto publisher = node->create_publisher<std_msgs::msg::String>("thetav", 10);
-    std_msgs::msg::String message;
     auto publish_count = 0;
     rclcpp::WallRate loop_rate(500ms);
 
     res = uvc_start_streaming(devh, &ctrl, cb, &src, 0);
     while (rclcpp::ok() && (res == UVC_SUCCESS)) {
-        message.data = "Hello, world! " + std::to_string(publish_count++);
-        // RCLCPP_INFO(node->get_logger(), "Publishing: '%s'", message.data.c_str());
-        publisher->publish(message);
         rclcpp::spin_some(node);
         loop_rate.sleep();
     }
-	std::cout << "End" << std::endl;
 
     gst_element_set_state(src.pipeline, GST_STATE_NULL);
     g_source_remove(src.bus_watch_id);

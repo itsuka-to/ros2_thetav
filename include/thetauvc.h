@@ -1,6 +1,6 @@
 /*
   Copyright 2020 K. Takeo. All rights reserved.
-  Copyright 2020 Itsuka Tomoya(github id:@itsuka-to)
+  Copyright 2020 Tomoya Itsuka (@itsuka-to)
 
   Redistribution and use in source and binary forms, with or without
   modification, are permitted provided that the following conditions
