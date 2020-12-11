@@ -274,7 +274,10 @@ int main(int argc, char * argv[])
     
     rclcpp::init(argc, argv);
     auto node = rclcpp::Node::make_shared("thetav_publisher");
-    image_pub = node->create_publisher<sensor_msgs::msg::Image>("thetav", 10);
+    image_pub = node->create_publisher<sensor_msgs::msg::Image>(
+        "thetav", 
+        rmw_qos_profile_sensor_data
+    );
     auto publish_count = 0;
     rclcpp::WallRate loop_rate(500ms);
 
