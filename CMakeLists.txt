@@ -65,9 +65,7 @@ ament_target_dependencies(thetav_publisher
   rclcpp
   std_msgs
   sensor_msgs
-  thetauvc
   libuvc
-  gst
 )
 
 target_link_libraries(thetav_publisher

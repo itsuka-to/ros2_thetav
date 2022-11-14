@@ -1,7 +1,7 @@
 ros2_thetav
 ============================
 
-ROS2 node to publish image topic from RICOH THETA V on Ubuntu18.04 ROS2-Dashing.
+ROS2 node to publish image topic from RICOH THETA V on Ubuntu22.04 ROS2-Humble.
 This is **unofficial** package.
 
 This node publish sensor_msgs/msg/Image topic named "thetav", the format is RGB8.
@@ -10,7 +10,7 @@ This node publish sensor_msgs/msg/Image topic named "thetav", the format is RGB8
 ## Build
 1. Install GStreamer-1.0.
 ```
-$ sudo apt-get install libgstreamer1.0-0 gstreamer1.0-plugins-base gstreamer1.0-plugins-good gstreamer1.0-plugins-bad gstreamer1.0-plugins-ugly gstreamer1.0-libav gstreamer1.0-doc gstreamer1.0-tools gstreamer1.0-x gstreamer1.0-alsa gstreamer1.0-gl gstreamer1.0-gtk3 gstreamer1.0-qt5 gstreamer1.0-pulseaudio libgstreamer-plugins-base1.0-dev
+$ sudo apt-get install libgstreamer1.0-0 gstreamer1.0-plugins-base gstreamer1.0-plugins-good gstreamer1.0-plugins-bad gstreamer1.0-plugins-ugly gstreamer1.0-libav gstreamer1.0-tools gstreamer1.0-x gstreamer1.0-alsa gstreamer1.0-gl gstreamer1.0-gtk3 gstreamer1.0-qt5 gstreamer1.0-pulseaudio libgstreamer-plugins-base1.0-dev
 ```
 
 2. Build and install richoapi/libuvc-theta.

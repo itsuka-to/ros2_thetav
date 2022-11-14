@@ -273,10 +273,11 @@ int main(int argc, char * argv[])
     // std::cout << ctrl << std::endl;
     
     rclcpp::init(argc, argv);
+    rclcpp::QoS custom_qos(rclcpp::KeepLast(10), rmw_qos_profile_sensor_data);
     auto node = rclcpp::Node::make_shared("thetav_publisher");
     image_pub = node->create_publisher<sensor_msgs::msg::Image>(
         "thetav", 
-        rmw_qos_profile_sensor_data
+        custom_qos
     );
     auto publish_count = 0;
     rclcpp::WallRate loop_rate(500ms);
